@@ -89,7 +89,7 @@ export default function DecisionEngine() {
 
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
+                  <label className="text-sm font-medium mb-2 flex items-center gap-2">
                     <Tag className="w-4 h-4" /> Category
                   </label>
                   <select
@@ -103,7 +103,7 @@ export default function DecisionEngine() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2 flex items-center gap-2">
+                  <label className="text-sm font-medium mb-2 flex items-center gap-2">
                     <Clock className="w-4 h-4" /> Urgency
                   </label>
                   <div className="flex gap-2">

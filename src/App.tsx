@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard'
 import DecisionEngine from './pages/DecisionEngine'
 import DecisionAnalyser from './pages/DecisionAnalyser'
 import Insights from './pages/Insights'
+import Calculator from './pages/Calculator'
 import type { ReactNode } from 'react'
 import ProtectedRoute from './components/ProtectedRoute'
 import { useAuthStore } from './store/useAuthStore'
@@ -71,6 +72,10 @@ export default function App() {
         <Route
           path="/insights"
           element={<ProtectedRoute><PageWrapper><Insights /></PageWrapper></ProtectedRoute>}
+        />
+        <Route
+          path="/calculator"
+          element={<ProtectedRoute><PageWrapper><Calculator /></PageWrapper></ProtectedRoute>}
         />
       </Routes>
     </AnimatePresence>

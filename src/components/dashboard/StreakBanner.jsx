@@ -11,6 +11,7 @@ import {
   getStreakData,
   getLast7DaysActivity,
   getStreakMessage,
+  updateGlobalStreak,
 } from '@/utils/streak'
 
 function formatTime(totalSeconds) {
@@ -28,31 +29,48 @@ export default function StreakBanner() {
   const [secondsToday, setSecondsToday] = useState(0)
 
   useEffect(() => {
-    const data = getStreakData()
-    setStreakData(data)
-    setLast7Days(getLast7DaysActivity())
+    const initBanner = () => {
+      // Update streak first to ensure data is current
+      updateGlobalStreak()
+      
+      const data = getStreakData()
+      setStreakData(data)
+      setLast7Days(getLast7DaysActivity())
 
-    // Check date and reset if new day
-    const today = new Date().toDateString()
-    const savedDate = localStorage.getItem('lifeos_session_date')
-    const savedSeconds = Number(localStorage.getItem('lifeos_seconds_today')) || 0
+      // Check date and reset if new day
+      const today = new Date().toDateString()
+      const savedDate = localStorage.getItem('lifeos_session_date')
+      const savedSeconds = Number(localStorage.getItem('lifeos_seconds_today')) || 0
 
-    if (savedDate !== today) {
-      // New day - reset everything
-      localStorage.setItem('lifeos_session_date', today)
-      localStorage.setItem('lifeos_seconds_today', '0')
+      if (savedDate !== today) {
+        // New day - reset everything
+        localStorage.setItem('lifeos_session_date', today)
+        localStorage.setItem('lifeos_seconds_today', '0')
+        localStorage.setItem('lifeos_session_start', Date.now().toString())
+        setSecondsToday(0)
+      } else {
+        // Same day - calculate elapsed time since last visit
+        const sessionStart = Number(localStorage.getItem('lifeos_session_start')) || Date.now()
+        const elapsed = Math.floor((Date.now() - sessionStart) / 1000)
+        const total = savedSeconds + Math.max(0, elapsed)
+        setSecondsToday(total)
+      }
+
+      // Update session start for this visit
       localStorage.setItem('lifeos_session_start', Date.now().toString())
-      setSecondsToday(0)
-    } else {
-      // Same day - calculate elapsed time since last visit
-      const sessionStart = Number(localStorage.getItem('lifeos_session_start')) || Date.now()
-      const elapsed = Math.floor((Date.now() - sessionStart) / 1000)
-      const total = savedSeconds + Math.max(0, elapsed)
-      setSecondsToday(total)
     }
 
-    // Update session start for this visit
-    localStorage.setItem('lifeos_session_start', Date.now().toString())
+    initBanner()
+
+    // Also refresh when tab becomes visible to ensure date updates
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        initBanner()
+      }
+    }
+
+    window.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => window.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [])
 
   // Live timer - counts every second while on page
@@ -77,6 +95,9 @@ export default function StreakBanner() {
       } else {
         // Update session start when returning
         localStorage.setItem('lifeos_session_start', Date.now().toString())
+        // Refresh streak data and banner when returning to tab
+        setStreakData(getStreakData())
+        setLast7Days(getLast7DaysActivity())
       }
     }
 
@@ -84,7 +105,21 @@ export default function StreakBanner() {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [secondsToday])
 
-  if (!streakData) return null
+  if (!streakData) {
+    // Return a skeleton/placeholder to avoid null issues
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: -25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative overflow-hidden rounded-[32px] border border-[#1e3028] bg-gradient-to-br from-[#07110b] via-[#0c1c14] to-[#07110b] p-8 mb-6 shadow-[0_0_50px_rgba(5,150,105,0.08)]"
+      >
+        <div className="relative z-10 animate-pulse">
+          <div className="h-16 bg-[#1e3028] rounded-lg w-32" />
+        </div>
+      </motion.div>
+    )
+  }
 
   const {
     currentStreak,
