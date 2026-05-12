@@ -6,7 +6,6 @@ import ParticleBackground from '@/components/three/ParticleBackground'
 import StreakBanner from '@/components/dashboard/StreakBanner'
 import DecisionInboxNew from '@/components/dashboard/DecisionInboxNew'
 import DecisionHistory from '@/components/dashboard/DecisionHistory'
-import DecisionAnalyserWidget from '@/components/dashboard/DecisionAnalyserWidget'
 import IncomeTracker from '@/components/dashboard/IncomeTracker'
 import ExpenseTracker from '@/components/dashboard/ExpenseTracker'
 import BudgetSummary from '@/components/dashboard/BudgetSummary'
@@ -23,7 +22,6 @@ import SkillsCard from '@/components/dashboard/SkillsCard'
 import ReadingListCard from '@/components/dashboard/ReadingListCard'
 import StudySessionsCard from '@/components/dashboard/StudySessionsCard'
 import NotesInsightsCard from '@/components/dashboard/NotesInsightsCard'
-import CalculatorWidget from '@/components/dashboard/CalculatorWidget'
 import JobFieldsCard from '@/components/dashboard/JobFieldsCard'
 import OpportunityFeedCard from '@/components/dashboard/OpportunityFeedCard'
 import ApplicationsCard from '@/components/dashboard/ApplicationsCard'
@@ -34,42 +32,22 @@ import { useUserStore } from '@/store/useUserStore'
 
 export default function Dashboard() {
   const [selectedModules, setSelectedModules] = useState([])
-
-  const userName = useUserStore(
-    (state) => state.profile?.name || ''
-  )
+  const userName = useUserStore((state) => state.profile?.name || '')
 
   useEffect(() => {
-    // Reload dashboard only once
-    const hasReloaded = sessionStorage.getItem('dashboardReloaded')
-
-    if (!hasReloaded) {
-      sessionStorage.setItem('dashboardReloaded', 'true')
-      window.location.reload()
-      return
-    }
-
     updateGlobalStreak()
-
     const stored = localStorage.getItem('lifeosModules')
-
     if (stored) {
       try {
         const rawModules = JSON.parse(stored)
-
         const mapper = {
           money: 'Money & Finance',
           habits: 'Habits & Health',
           learning: 'Learning & Skills',
           opportunities: 'Opportunities',
         }
-
-        const normalized = rawModules.map(
-          (module) => mapper[module] || module
-        )
-
+        const normalized = rawModules.map((module) => mapper[module] || module)
         console.log('Modules selected:', normalized)
-
         setSelectedModules(normalized)
       } catch (e) {
         console.error('Failed to load modules:', e)
@@ -79,11 +57,7 @@ export default function Dashboard() {
     }
   }, [])
 
-  const today = new Date().toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-  })
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
   return (
     <div className="min-h-screen bg-[#0a0f0a] relative">
@@ -92,7 +66,6 @@ export default function Dashboard() {
 
       <div className="relative z-10 pt-24 pb-12 px-4">
         <div className="max-w-7xl mx-auto">
-
           {/* Streak Banner */}
           <StreakBanner />
 
@@ -104,135 +77,61 @@ export default function Dashboard() {
           >
             <div>
               <h1 className="text-2xl font-bold text-white">
-                {userName
-                  ? `${userName}'s Dashboard`
-                  : 'Your Dashboard'}
+                {userName ? `${userName}'s Dashboard` : 'Your Dashboard'}
               </h1>
-
               <p className="text-sm text-gray-400 mt-1">
                 {userName
                   ? `Hi ${userName}, how are you doing today 🙃`
                   : 'Hi there, how are you doing today 🙃'}
               </p>
             </div>
-
-            <span className="text-sm text-gray-400">
-              {today}
-            </span>
+            <span className="text-sm text-gray-400">{today}</span>
           </motion.div>
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-            {/* Decisions */}
-            <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">
-              Decisions
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-            >
+            <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">Decisions</div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
               <DecisionInboxNew />
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.15 }}
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
               <DecisionHistory />
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <DecisionAnalyserWidget />
-            </motion.div>
-
-            {/* Empty State */}
             {selectedModules.length === 0 && (
               <div className="lg:col-span-3 rounded-2xl bg-[#0f1a13] border border-[#1e3028] p-5 text-center">
-                <p className="text-gray-300 mb-3">
-                  No modules selected yet.
-                </p>
-
-                <Link
-                  to="/onboarding"
-                  className="text-[#059669] hover:underline"
-                >
-                  Go to onboarding
-                </Link>
+                <p className="text-gray-300 mb-3">No modules selected yet.</p>
+                <Link to="/onboarding" className="text-[#059669] hover:underline">Go to onboarding</Link>
               </div>
             )}
 
-            {/* Money & Finance */}
             {selectedModules.includes('Money & Finance') && (
               <>
-                <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">
-                  Money & Finance
-                </div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
+                <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">Money & Finance</div>
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
                   <IncomeTracker />
                 </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.25 }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.25 }}>
                   <ExpenseTracker />
                 </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.3 }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
                   <BudgetSummary />
                 </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.35 }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}>
                   <NetWorth />
                 </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.4 }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }}>
                   <BillsSubscriptions />
                 </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.45 }}
-                >
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}>
                   <SavingsGoals />
                 </motion.div>
               </>
             )}
 
-            {/* Habits & Health */}
             {selectedModules.includes('Habits & Health') && (
               <>
-                <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">
-                  Habits & Health
-                </div>
-
+                <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">Habits & Health</div>
                 <HabitsDailyCard />
                 <HealthMetricsCard />
                 <WaterNutritionCard />
@@ -241,29 +140,20 @@ export default function Dashboard() {
               </>
             )}
 
-            {/* Learning & Skills */}
             {selectedModules.includes('Learning & Skills') && (
               <>
-                <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">
-                  Learning & Skills
-                </div>
-
+                <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">Learning & Skills</div>
                 <CourseTrackerCard />
                 <SkillsCard />
-                <CalculatorWidget />
                 <ReadingListCard />
                 <StudySessionsCard />
                 <NotesInsightsCard />
               </>
             )}
 
-            {/* Opportunities */}
             {selectedModules.includes('Opportunities') && (
               <>
-                <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">
-                  Opportunities
-                </div>
-
+                <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">Opportunities</div>
                 <JobFieldsCard />
                 <OpportunityFeedCard />
                 <ApplicationsCard />
@@ -271,7 +161,6 @@ export default function Dashboard() {
                 <OpportunityNotesCard />
               </>
             )}
-
           </div>
         </div>
       </div>

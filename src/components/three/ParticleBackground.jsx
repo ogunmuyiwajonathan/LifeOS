@@ -2,7 +2,7 @@ import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-function Particles({ count = 200 }) {
+function Particles({ count = 200, color = '#7C3AED' }) {
   const meshRef = useRef()
   
   const particles = useMemo(() => {
@@ -34,7 +34,7 @@ function Particles({ count = 200 }) {
       </bufferGeometry>
       <pointsMaterial
         size={0.05}
-        color="#7C3AED"
+        color={color}
         transparent
         opacity={0.6}
         sizeAttenuation
@@ -43,12 +43,12 @@ function Particles({ count = 200 }) {
   )
 }
 
-export default function ParticleBackground() {
+export default function ParticleBackground({ color = '#059669' }) {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas camera={{ position: [0, 0, 8], fov: 60 }}>
         <ambientLight intensity={0.3} />
-        <Particles count={300} />
+        <Particles count={300} color={color} />
       </Canvas>
     </div>
   )

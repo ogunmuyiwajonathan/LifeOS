@@ -4,22 +4,22 @@ import { LayoutDashboard, ArrowRight, Sparkles, TrendingUp, Target, CheckCircle2
 
 const steps = [
   {
-    icon: LayoutDashboard,
-    title: 'Set Up Your Dashboard',
-    description: 'Customize your life command center with the widgets that matter most to you. Drag, drop, and organize exactly how you want it.',
+    icon: CheckCircle2,
+    title: 'Get Started',
+    description: 'Sign up and create your account in seconds. Join thousands of users taking control of their lives with LifeOS.',
     gradient: 'from-[#059669] to-[#10b981]',
     glow: 'shadow-[#059669]/20',
     bgGlow: 'from-[#059669]/10 to-transparent',
-    features: ['Drag & drop widgets', 'Multiple layouts', 'Real-time sync'],
+    features: ['Quick signup', 'Email verification', 'Secure login'],
   },
   {
-    icon: TrendingUp,
-    title: 'Track Your Life',
-    description: 'Log your money, habits, learning, and opportunities daily to build momentum. Watch your progress compound over time.',
+    icon: LayoutDashboard,
+    title: 'Set Up Your Dashboard',
+    description: 'Complete the onboarding process to customize your dashboard. Choose your modules (Money, Habits, Learning, Opportunities) and start tracking what matters most.',
     gradient: 'from-[#10b981] to-[#34d399]',
     glow: 'shadow-[#10b981]/20',
     bgGlow: 'from-[#10b981]/10 to-transparent',
-    features: ['Daily logging', 'Analytics & trends', 'Streaks & goals'],
+    features: ['Select modules', 'Customize widgets', 'Start tracking'],
   },
   {
     icon: Target,
@@ -66,35 +66,41 @@ export default function HowItWorks() {
             How It{' '}
             <span className="relative inline-block">
               <span className="relative z-10 text-[#059669]">Works</span>
-              <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 200 8" preserveAspectRatio="none">
+              <svg
+                className="absolute -bottom-3 left-0 w-full h-auto pointer-events-none"
+                viewBox="0 0 200 12"
+                preserveAspectRatio="none"
+                style={{ minHeight: '12px' }}
+              >
                 <motion.path
-                  d="M0 7 Q50 0 100 7 T200 7"
+                  d="M0 8 Q50 2 100 8 T200 8"
                   stroke="#059669"
-                  strokeWidth="3"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
                   fill="none"
-                  initial={{ pathLength: 0 }}
-                  animate={isInView ? { pathLength: 1 } : {}}
-                  transition={{ delay: 0.5, duration: 1, ease: 'easeOut' }}
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={isInView ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+                  transition={{ delay: 0.3, duration: 0.8, ease: 'easeInOut' }}
                 />
               </svg>
             </span>
           </h2>
-          
+
           <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Three simple steps to transform how you manage your life and unlock your full potential.
+            Two simple steps to transform how you manage your life and unlock your full potential.
           </p>
         </motion.div>
 
         {/* Steps Grid */}
         <div className="relative">
-          <div className="grid lg:grid-cols-3 gap-8 lg:gap-6">
+          <div className="grid lg:grid-cols-3 gap-8 lg:gap-6 max-w-full mx-auto">
             {steps.map((step, i) => (
               <motion.div
                 key={step.title}
                 initial={{ opacity: 0, y: 50 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ 
-                  duration: 0.7, 
+                transition={{
+                  duration: 0.7,
                   delay: 0.4 + i * 0.25,
                   ease: [0.22, 1, 0.36, 1]
                 }}
@@ -102,7 +108,7 @@ export default function HowItWorks() {
               >
                 {/* Card */}
                 <div className="relative p-8 rounded-3xl bg-card/50 dark:bg-[#0F1610]/60 border border-border/50 dark:border-[#1E3028]/60 backdrop-blur-sm hover:border-[#059669]/30 dark:hover:border-[#059669]/30 transition-all duration-500 hover:shadow-xl hover:shadow-[#059669]/5">
-                  
+
                   {/* Step Number Badge */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 lg:left-8 lg:translate-x-0">
                     <div className={`w-8 h-8 rounded-full bg-[#059669] text-white text-sm font-bold flex items-center justify-center shadow-lg ${step.glow}`}>
