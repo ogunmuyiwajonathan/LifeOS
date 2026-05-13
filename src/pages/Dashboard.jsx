@@ -1,3 +1,4 @@
+// Dashboard.jsx — Fixed header responsive layout
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
@@ -30,14 +31,13 @@ import NetworkingCard from '@/components/dashboard/NetworkingCard'
 import OpportunityNotesCard from '@/components/dashboard/OpportunityNotesCard'
 import { updateGlobalStreak } from '@/utils/streak'
 import { useUserStore } from '@/store/useUserStore'
+
 export default function Dashboard() {
   const [selectedModules, setSelectedModules] = useState([])
   const userName = useUserStore((state) => state.profile?.name || '')
 
   useEffect(() => {
-    // Load modules from localStorage and update streak
     const loadModules = () => {
-      // Ensure localStorage is properly persisted
       const stored = localStorage.getItem('lifeosModules')
       if (stored) {
         try {
@@ -61,7 +61,6 @@ export default function Dashboard() {
       }
     }
 
-    // Load modules first, then update streak
     loadModules()
     updateGlobalStreak()
   }, [])
@@ -75,17 +74,16 @@ export default function Dashboard() {
 
       <div className="relative z-10 pt-24 pb-12 px-4">
         <div className="max-w-7xl mx-auto">
-          {/* Streak Banner */}
           <StreakBanner />
 
-          {/* Dashboard Header */}
+          {/* Dashboard Header — Fixed responsive layout */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-start justify-between mb-8"
+            className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-8"
           >
-            <div>
-              <h1 className="text-2xl font-bold text-white">
+            <div className="min-w-0">
+              <h1 className="text-xl sm:text-2xl font-bold text-white truncate">
                 {userName ? `${userName}'s Dashboard` : 'Your Dashboard'}
               </h1>
               <p className="text-sm text-gray-400 mt-1">
@@ -94,10 +92,11 @@ export default function Dashboard() {
                   : 'Hi there, how are you doing today 🙃'}
               </p>
             </div>
-            <span className="text-sm text-gray-400">{today}</span>
+            <span className="text-sm text-gray-400 shrink-0 sm:text-right">
+              {today}
+            </span>
           </motion.div>
 
-          {/* Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-3 text-xs font-semibold tracking-widest text-gray-500 uppercase mb-3 mt-6">Decisions</div>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
