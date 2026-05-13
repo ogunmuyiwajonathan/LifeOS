@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { analyzeDecision } from '@/lib/gemini'
 import { useDecisionStore } from '@/store/useDecisionStore'
 import Navbar from '@/components/layout/Navbar'
-import DecisionTree from '@/components/three/DecisionTree'
 
 const categories = ['career', 'life', 'finance', 'relationship', 'health', 'other']
 const urgencyLevels = [
@@ -265,14 +264,7 @@ export default function DecisionEngine() {
                   <p className="text-sm">{result.reasoning}</p>
                 </motion.div>
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  <h3 className="font-semibold mb-4 text-center">Possible Outcomes</h3>
-                  <DecisionTree />
-                </motion.div>
+
 
                 <div className="grid sm:grid-cols-3 gap-4">
                   {[

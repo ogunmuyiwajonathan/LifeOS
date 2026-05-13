@@ -39,25 +39,35 @@ export default function StreakBanner() {
 
       // Check date and reset if new day
       const today = new Date().toDateString()
-      const savedDate = localStorage.getItem('lifeos_session_date')
+      let savedDate = localStorage.getItem('lifeos_session_date')
       const savedSeconds = Number(localStorage.getItem('lifeos_seconds_today')) || 0
 
+      // Initialize session date if not already set
+      if (!savedDate) {
+        savedDate = today
+        localStorage.setItem('lifeos_session_date', today)
+      }
+
       if (savedDate !== today) {
-        // New day - reset everything
+        // New day - reset time counter but preserve streak
         localStorage.setItem('lifeos_session_date', today)
         localStorage.setItem('lifeos_seconds_today', '0')
         localStorage.setItem('lifeos_session_start', Date.now().toString())
         setSecondsToday(0)
       } else {
         // Same day - calculate elapsed time since last visit
-        const sessionStart = Number(localStorage.getItem('lifeos_session_start')) || Date.now()
+        let sessionStart = Number(localStorage.getItem('lifeos_session_start'))
+        
+        // If session start is not set for today, set it now
+        if (!sessionStart) {
+          sessionStart = Date.now()
+          localStorage.setItem('lifeos_session_start', sessionStart.toString())
+        }
+        
         const elapsed = Math.floor((Date.now() - sessionStart) / 1000)
         const total = savedSeconds + Math.max(0, elapsed)
         setSecondsToday(total)
       }
-
-      // Update session start for this visit
-      localStorage.setItem('lifeos_session_start', Date.now().toString())
     }
 
     initBanner()

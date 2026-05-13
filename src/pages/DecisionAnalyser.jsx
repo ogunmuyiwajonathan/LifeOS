@@ -4,7 +4,6 @@ import { BrainCircuit, Send, Sparkles, ChevronRight, Check, X, AlertTriangle, Ch
 import { Button } from '@/components/ui/button'
 import { analyzeDecision } from '@/lib/gemini'
 import Navbar from '@/components/layout/Navbar'
-import DecisionTree from '@/components/three/DecisionTree'
 
 const riskIcons = {
   Low: CheckCircle2,
@@ -21,12 +20,12 @@ export default function DecisionAnalyser() {
 
   useEffect(() => {
     loadDecisions()
-    
+
     const handleUpdate = () => {
       loadDecisions()
     }
     window.addEventListener('decisionsUpdated', handleUpdate)
-    
+
     return () => {
       window.removeEventListener('decisionsUpdated', handleUpdate)
     }
@@ -54,12 +53,12 @@ export default function DecisionAnalyser() {
     setAnalysis(null)
     setLoading(true)
     setViewMode('analyze')
-    
+
     try {
       const decisionText = decision.title || decision.situation || ''
       const options = decision.options || ''
       const fullText = `${decisionText}${options ? `. ${options}` : ''}`
-      
+
       const result = await analyzeDecision(fullText, decision.category || 'general', decision.urgency || 'medium')
       setAnalysis(result)
     } catch (error) {
@@ -130,11 +129,10 @@ export default function DecisionAnalyser() {
                             )}
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className={`text-xs px-2 py-1 rounded ${
-                              decision.source === 'history'
-                                ? 'bg-green-900/20 text-green-400'
-                                : 'bg-yellow-900/20 text-yellow-400'
-                            }`}>
+                            <span className={`text-xs px-2 py-1 rounded ${decision.source === 'history'
+                              ? 'bg-green-900/20 text-green-400'
+                              : 'bg-yellow-900/20 text-yellow-400'
+                              }`}>
                               {decision.source === 'history' ? 'Decided' : 'Pending'}
                             </span>
                             <ChevronRight className="w-5 h-5 text-muted-foreground" />
@@ -267,9 +265,8 @@ export default function DecisionAnalyser() {
                         {analysis.riskScore !== undefined && (
                           <div className="w-full bg-muted rounded-full h-2">
                             <div
-                              className={`h-2 rounded-full transition-all ${
-                                analysis.riskScore < 40 ? 'bg-brand-green' : analysis.riskScore < 70 ? 'bg-brand-orange' : 'bg-red-500'
-                              }`}
+                              className={`h-2 rounded-full transition-all ${analysis.riskScore < 40 ? 'bg-brand-green' : analysis.riskScore < 70 ? 'bg-brand-orange' : 'bg-red-500'
+                                }`}
                               style={{ width: `${Math.min(100, analysis.riskScore)}%` }}
                             />
                           </div>
@@ -332,36 +329,39 @@ export default function DecisionAnalyser() {
                       )}
                     </motion.div>
 
-                    {/* Decision Tree Visualization */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                    >
-                      <h3 className="font-semibold mb-4 text-center">Decision Tree Visualization</h3>
-                      <div className="rounded-2xl border border-border bg-card p-6 min-h-[400px] flex items-center justify-center">
-                        <DecisionTree />
-                      </div>
-                    </motion.div>
-
                     {/* Outcomes */}
                     <div className="grid sm:grid-cols-3 gap-4">
                       {[
-                        { key: 'bestCase', label: 'Best Case', color: 'border-brand-green/30 bg-brand-green/5' },
-                        { key: 'worstCase', label: 'Worst Case', color: 'border-red-500/30 bg-red-500/5' },
-                        { key: 'mostLikely', label: 'Most Likely', color: 'border-brand-blue/30 bg-brand-blue/5' },
-                      ].map((outcome, i) => (
-                        <motion.div
-                          key={outcome.key}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.7 + i * 0.1 }}
-                          className={`p-4 rounded-xl border ${outcome.color}`}
-                        >
-                          <p className="text-xs font-medium mb-2 opacity-70">{outcome.label}</p>
-                          <p className="text-sm">{analysis.outcomes?.[outcome.key]}</p>
-                        </motion.div>
-                      ))}
+                        {
+                          key: 'bestCase',
+                          label: 'Best Case',
+                          color: 'border-green-500/30 bg-green-500/5',
+                          glow: 'hover:shadow-[0_0_40px_rgba(34,197,94,0.5)]',
+                        },
+                        {
+                          key: 'worstCase',
+                          label: 'Worst Case',
+                          color: 'border-red-500/30 bg-red-500/5',
+                          glow: 'hover:shadow-[0_0_40px_rgba(239,68,68,0.5)]',
+                        },
+                        {
+                          key: 'mostLikely',
+                          label: 'Most Likely',
+                          color: 'border-cyan-500/30 bg-cyan-500/5',
+                          glow: 'hover:shadow-[0_0_40px_rgba(59,130,246,0.5)]',
+                        },
+                      ].map((o, i) => (
+                      <motion.div
+                        key={o.key}
+                        whileHover={{ scale: 1.04, y: -4 }}
+                        className={`p-4 rounded-xl border transition-all duration-300 ease-in-out cursor-pointer ${o.color} ${o.glow}`}
+                      >
+                        <p className="font-semibold mb-2">{o.label}</p>
+                        <p className="text-sm">
+                          {analysis.outcomes?.[o.key]}
+                        </p>
+                      </motion.div>
+                    ))}
                     </div>
                   </motion.div>
                 ) : null}

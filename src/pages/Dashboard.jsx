@@ -6,6 +6,7 @@ import ParticleBackground from '@/components/three/ParticleBackground'
 import StreakBanner from '@/components/dashboard/StreakBanner'
 import DecisionInboxNew from '@/components/dashboard/DecisionInboxNew'
 import DecisionHistory from '@/components/dashboard/DecisionHistory'
+import DecisionAnalyserWidget from '@/components/dashboard/DecisionAnalyserWidget'
 import IncomeTracker from '@/components/dashboard/IncomeTracker'
 import ExpenseTracker from '@/components/dashboard/ExpenseTracker'
 import BudgetSummary from '@/components/dashboard/BudgetSummary'
@@ -29,32 +30,40 @@ import NetworkingCard from '@/components/dashboard/NetworkingCard'
 import OpportunityNotesCard from '@/components/dashboard/OpportunityNotesCard'
 import { updateGlobalStreak } from '@/utils/streak'
 import { useUserStore } from '@/store/useUserStore'
-
 export default function Dashboard() {
   const [selectedModules, setSelectedModules] = useState([])
   const userName = useUserStore((state) => state.profile?.name || '')
 
   useEffect(() => {
-    updateGlobalStreak()
-    const stored = localStorage.getItem('lifeosModules')
-    if (stored) {
-      try {
-        const rawModules = JSON.parse(stored)
-        const mapper = {
-          money: 'Money & Finance',
-          habits: 'Habits & Health',
-          learning: 'Learning & Skills',
-          opportunities: 'Opportunities',
+    // Load modules from localStorage and update streak
+    const loadModules = () => {
+      // Ensure localStorage is properly persisted
+      const stored = localStorage.getItem('lifeosModules')
+      if (stored) {
+        try {
+          const rawModules = JSON.parse(stored)
+          const mapper = {
+            money: 'Money & Finance',
+            habits: 'Habits & Health',
+            learning: 'Learning & Skills',
+            opportunities: 'Opportunities',
+          }
+          const normalized = rawModules.map((module) => mapper[module] || module)
+          console.log('Modules selected:', normalized)
+          setSelectedModules(normalized)
+        } catch (e) {
+          console.error('Failed to load modules:', e)
+          setSelectedModules([])
         }
-        const normalized = rawModules.map((module) => mapper[module] || module)
-        console.log('Modules selected:', normalized)
-        setSelectedModules(normalized)
-      } catch (e) {
-        console.error('Failed to load modules:', e)
+      } else {
+        console.log('Modules selected:', [])
+        setSelectedModules([])
       }
-    } else {
-      console.log('Modules selected:', [])
     }
+
+    // Load modules first, then update streak
+    loadModules()
+    updateGlobalStreak()
   }, [])
 
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
@@ -96,6 +105,9 @@ export default function Dashboard() {
             </motion.div>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
               <DecisionHistory />
+            </motion.div>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
+              <DecisionAnalyserWidget />
             </motion.div>
 
             {selectedModules.length === 0 && (

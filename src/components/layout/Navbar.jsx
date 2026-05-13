@@ -92,7 +92,7 @@ export default function Navbar() {
             )}
 
             {isLanding && (
-              <Link to="/onboarding" onClick={() => { localStorage.clear(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+              <Link to="/dashboard" onClick={() => { localStorage.clear(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
                 <Button size="sm" className="bg-[#059669] hover:bg-[#047857] text-white hidden sm:flex">
                   Get Started
                 </Button>
