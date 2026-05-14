@@ -1,4 +1,40 @@
-# React + TypeScript + Vite
+# LifeOS
+
+Your personal AI-powered life operating system — track decisions, mood, savings goals, and more.
+
+## 🚀 Deployment — Vercel Environment Variables
+
+This app requires the following environment variables. Add them in your Vercel project dashboard under **Settings → Environment Variables**, then go to **Deployments → Redeploy**.
+
+| Variable | Where to get it |
+|---|---|
+| `VITE_GROQ_API_KEY` | [console.groq.com](https://console.groq.com) |
+| `VITE_GEMINI_API_KEY` | [aistudio.google.com](https://aistudio.google.com) |
+| `VITE_SUPABASE_URL` | [supabase.com](https://supabase.com) → Project Settings → API |
+| `VITE_SUPABASE_ANON_KEY` | [supabase.com](https://supabase.com) → Project Settings → API |
+
+> **Important:** `.env` is in `.gitignore` and is never pushed to GitHub. You must add each variable manually in Vercel.
+
+## 🛠️ Local Development
+
+Copy the example file and fill in your keys:
+
+```bash
+cp .env.example .env
+```
+
+Then run:
+
+```bash
+npm install
+npm run dev
+```
+
+---
+
+<!-- Original Vite template notes below -->
+
+## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

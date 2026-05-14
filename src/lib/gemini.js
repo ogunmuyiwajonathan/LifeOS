@@ -1,12 +1,34 @@
 // Groq API URL
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions'
 
+// ── Environment variable validation ────────────────────────────────────────
+const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY
+const GEMINI_KEY = import.meta.env.VITE_GEMINI_API_KEY
+
+if (!GROQ_KEY) {
+  console.error('❌ VITE_GROQ_API_KEY is missing — add it to Vercel Environment Variables')
+} else {
+  console.log('✅ Groq API key loaded successfully')
+}
+
+if (!GEMINI_KEY) {
+  console.warn('⚠️  VITE_GEMINI_API_KEY is missing — add it to Vercel Environment Variables')
+} else {
+  console.log('✅ Gemini API key loaded successfully')
+}
+
+/**
+ * True when the Groq key is absent — used by the UI to show a warning banner.
+ */
+export const isApiKeyMissing = !GROQ_KEY
+
 export async function analyzeDecision(situation, category = 'general', urgency = 'medium') {
-  
-  // Check if API key exists
-  if (!import.meta.env.VITE_GROQ_API_KEY) {
-    console.warn('No Groq API key found')
-    return getMockResponse(situation)
+
+  // Check if API key exists — return a special sentinel so the UI can
+  // distinguish a missing-key error from a normal mock fallback.
+  if (!GROQ_KEY) {
+    console.warn('⚠️  Groq API key not configured — AI analysis unavailable')
+    return { __missingKey: true, ...getMockResponse(situation) }
   }
 
   const prompt = `You are a life decision coach. Analyze this decision carefully and return ONLY a valid JSON object. No markdown, no backticks, no extra text. Just raw JSON.
@@ -45,7 +67,7 @@ IMPORTANT:
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`
+        'Authorization': `Bearer ${GROQ_KEY}`
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',

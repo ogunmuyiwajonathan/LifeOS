@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BrainCircuit, Send, Sparkles, ChevronRight, Check, X, AlertTriangle, CheckCircle2, HelpCircle } from 'lucide-react'
+import { BrainCircuit, Send, Sparkles, ChevronRight, Check, X, AlertTriangle, CheckCircle2, HelpCircle, AlertCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { analyzeDecision } from '@/lib/gemini'
+import { analyzeDecision, isApiKeyMissing } from '@/lib/gemini'
 import Navbar from '@/components/layout/Navbar'
 
 const riskIcons = {
@@ -79,6 +79,23 @@ export default function DecisionAnalyser() {
       <Navbar />
       <div className="pt-24 pb-12 px-4">
         <div className="max-w-6xl mx-auto">
+
+          {/* ── API key warning banner ─────────────────────────────────── */}
+          {isApiKeyMissing && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 flex items-center gap-3 rounded-xl border border-yellow-500/40 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-300"
+            >
+              <AlertCircle className="w-5 h-5 shrink-0 text-yellow-400" />
+              <span>
+                <strong>⚠️ AI features unavailable</strong> — environment variables not configured.
+                Add <code className="mx-1 rounded bg-yellow-500/20 px-1 py-0.5 text-xs">VITE_GROQ_API_KEY</code>
+                to your Vercel project settings and redeploy.
+              </span>
+            </motion.div>
+          )}
+
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -186,6 +203,21 @@ export default function DecisionAnalyser() {
                   >
                     <div className="w-12 h-12 border-4 border-brand-purple/20 border-t-brand-purple rounded-full animate-spin mx-auto mb-4"></div>
                     <p className="text-muted-foreground">Analyzing your decision with AI...</p>
+                  </motion.div>
+                ) : analysis?.__missingKey ? (
+                  // Missing key — show clear error state instead of misleading mock
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="py-12 text-center space-y-3"
+                  >
+                    <AlertCircle className="w-12 h-12 text-yellow-400 mx-auto" />
+                    <p className="text-lg font-semibold text-yellow-300">AI Analysis Unavailable</p>
+                    <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                      The <code className="rounded bg-yellow-500/20 px-1 text-xs">VITE_GROQ_API_KEY</code> environment
+                      variable is not set. Add it in your Vercel project under{' '}
+                      <strong>Settings → Environment Variables</strong> and redeploy.
+                    </p>
                   </motion.div>
                 ) : analysis ? (
                   <motion.div
