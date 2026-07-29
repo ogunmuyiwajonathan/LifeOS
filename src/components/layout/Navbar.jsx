@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Sparkles } from 'lucide-react'
@@ -10,6 +10,7 @@ export default function Navbar() {
   const location = useLocation()
   const navigate = useNavigate()
   const isLanding = location.pathname === '/'
+  const navRef = useRef(null)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -20,6 +21,18 @@ export default function Navbar() {
   useEffect(() => {
     setMobileOpen(false)
   }, [location])
+
+  // Close mobile menu when tapping outside
+  useEffect(() => {
+    if (!mobileOpen) return
+    const handleClickOutside = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setMobileOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [mobileOpen])
 
   const navLinks = [
     { label: 'Features', href: '#features' },
@@ -44,7 +57,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav
+    <nav ref={navRef}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
           ? 'glass shadow-lg shadow-black/40'
